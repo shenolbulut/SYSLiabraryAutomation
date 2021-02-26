@@ -16,11 +16,9 @@ public class UsersPage extends BasePage{
     public static void checkInputs(String inputName, String value){
         String path="//label[contains(.,'"+inputName+"')]/../*[@class='form-control']";
         Driver.get().findElement(By.xpath(path)).clear();
-        try{
-            Driver.get().findElement(By.xpath(path)).sendKeys(value);
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+        if(value!=null){
+        Driver.get().findElement(By.xpath(path)).sendKeys(value);}
+
     }
 
     @FindBy(xpath = "//button[contains(.,'Save changes')]")
@@ -46,5 +44,8 @@ public class UsersPage extends BasePage{
 
     @FindBy(xpath = "//*[@class='fa fa-angle-right']/../..")
     public WebElement nextBtn;
+
+    @FindBy(css = ".btn.default")
+    public WebElement closeBtn;
 
 }

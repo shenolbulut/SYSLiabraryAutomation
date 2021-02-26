@@ -10,6 +10,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.Assert;
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 
 import java.util.ArrayList;
@@ -57,6 +58,7 @@ public class UserPageDef {
     @When("librarian click edit button")
     public void librarian_click_edit_button() {
        new UsersPage().editBtn.click();
+       BrowserUtils.waitFor(2);
     }
 
     @Then("librarian should be able to send following credential")
@@ -64,7 +66,12 @@ public class UserPageDef {
         for(String key: editTable.keySet()){
             UsersPage.checkInputs(key, editTable.get(key));
         }
-        new UsersPage().saveBtn.click();
+        try{
+            new Actions(Driver.get()).moveToElement(new UsersPage().saveBtn).click().perform();
+
+        }catch(Exception e){
+            throw new WebDriverException("asdfasdf");
+        }
         BrowserUtils.waitFor(2);
     }
 
@@ -173,7 +180,18 @@ public class UserPageDef {
 
     @Then("librarian gives invalid credentials for user name")
     public void librarianGivesInvalidCredentialsForUserName() {
+        BrowserUtils.waitFor(1);
+        if(Driver.get().findElement(By.cssSelector(".modal-body")).isDisplayed()) {
+            Assert.assertFalse(!Driver.get().findElement(By.xpath("//*[@class='help-block help-block-error']")).isDisplayed());
+            System.out.println("this is first assortion");
+        }else{
+            BrowserUtils.waitFor(1);
+            new Actions(Driver.get()).moveToElement(Driver.get().findElement(By.xpath("//*[@class='toast-message']"))).perform();
+            Assert.assertFalse(Driver.get().findElement(By.xpath("//*[@class='toast-message']")).isDisplayed());
+            System.out.println("this is second assertion");
+        }
 
-        Assert.assertFalse(Driver.get().findElement(By.xpath("//div[@class='toast-message']")).isDisplayed());
+
+
     }
 }
